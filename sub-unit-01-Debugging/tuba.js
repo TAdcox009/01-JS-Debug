@@ -4,8 +4,8 @@
  *    Tuba Farm Equipment
  *    Variables and functions
  *    
- *    Author: 
- *    Date:   
+ *    Author: Todd Adcox Jr
+ *     Date:   8/11/19   
 
  *    Filename: tuba.js
  */
