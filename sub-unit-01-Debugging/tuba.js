@@ -32,7 +32,24 @@ var acresBox = document.forms[0].acres;
 
 /* verify acres text box entry is a positive number */
 function verifyAcres() {
-   testFormCompleteness();      
+   try {
+      if (!(acresBox.value > 0)) {
+      throw "Please enter a number of acres greater than 0.";
+      }
+      } 
+   catch(message) {
+      validity = false;
+      messageText = message;
+      //remove erroneous entry from input box
+      acresBox.value = "";
+   }
+   finally {
+      acresComplete = validity;
+      //remove former recommendation
+      messageElement.innerHTML = messageText;
+      messageHeadElement.innerHTMl = "";
+      testFormCompleteness();
+   }
 }
 
 /* verify at least one crops checkbox is checked */
@@ -42,7 +59,28 @@ function verifyCrops() {
 
 /* verify months text box entry is between 1 and 12 */
 function verifyMonths() {
-   testFormCompleteness();
+/* verify months text box entry is between 1 and 12 */
+function verifyMonths() {
+   var validity = true;
+   var messageText = "";
+   try {
+       if (!(monthsBox.value >= 1 && monthsBox.value <= 12)) {
+           throw "Please enter a number of months between 1 and 12.";
+       }
+   }
+   catch(message) {
+       validity = false;
+       messageText = message;
+       // remove erroneous entry from input box
+       monthsBox.value = "";
+   }
+   finally {
+       monthsComplete = validity;
+       // remove former recommendation
+       messageElement.innerHTML = messageText;
+       messageHeadElement.innerHTML = "";
+       testFormCompleteness();
+   }
 }
 
 /* verify that a fuel option button is selected */
@@ -72,7 +110,7 @@ function createRecommendation() {
          messageHeadElement.innerHTML = "W1205";
          messageElement.innerHTML = "Can't be beat for the general tasks of a large farm. Medium- to heavy-duty muscle that's there then you need it.";
       } else { // 10+ months of farming per year
-         if (document.getElementById("wheat").checked  || document.getElementById("corn").checked && document.getElementById("soy").checked) {
+         if (document.getElementById("wheat").checked  || document.getElementById("corn").checked || document.getElementById("soy").checked) {
             messageHeadElement.innerHTML = "W2500";
             messageElement.innerHTML = "Our heavy-duty tractor designed especially for the needs of wheat, corn, and soy farmers. A reliable piece of equipment that you can turn to all year long.";
          } else {
@@ -135,4 +173,5 @@ if (window.addEventListener) {
    window.addEventListener("load", createEventListeners, false);
 } else if (window.attachEvent) {
    window.attachEvent("onload", createEventListeners);
+}
 }
