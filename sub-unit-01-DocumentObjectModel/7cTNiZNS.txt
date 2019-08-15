@@ -1,0 +1,349 @@
+1. define functions, populateFigures & createEventListeners
+2. write the event listener code for the left and right arrow
+   ```javascript
+   // note that leftArrow is a function 
+   // while leftarrow is a variable because capitalization matters
+   var leftarrow = document.getElementById("leftarrow");
+   if (leftarrow.addEventListener) {
+      leftarrow.addEventListener("click", leftArrow, false);
+   } else if (leftarrow.attachEvent) {
+      leftarrow.attachEvent("onclick", leftArrow);
+   }
+   ```
+3. add alerts or console logs to rightArrow() & leftArrow()
+4. click the right and left arrow and make sure the event being logged
+5. Within createEventListeners(), lets copy some code but instead of `document.getElementById` we'll use `getElementsByTagName()`.
+   ```javascript
+   var mainFig  = document.getElementsByTagName("img")[1];
+   if (mainFig .addEventListener) {
+         mainFig .addEventListener("click", zoomFig , false);
+   } else if (mainFig .attachEvent) {
+         mainFig .attachEvent("onclick", zoomFig );
+   }
+   ```
+   Note that getElementsByTagName returns an array or a list of imgs, we want the second img so we are using [1] (remember that arrayt start at 0, then 1 ++).
+   Then in `addEventListener()` we are listening to for the click event and calling the zoomFig() when the even is fired. So when we click on the img, it triggers a function to do something.  
+6. in zoomFig() we can add alert or console.log to see if this is working.
+   
+# populateFigures()
+7. Declare some variables: `var filename, currentFig`;
+This function will populate the figures with images from our image folder.
+Note that ever image is named "IMG_01", "IMG_01sm", "IMG_02", "IMG_02sm". 
+**How would we iterated over those files?**
+8. We'd probably write a loop?
+```javascript
+    for (var i = 1; i < 4; i++) {
+        filename = "images/IMG_0" + photoOrder[i] + "sm.jpg";
+        //// ES6 template literals
+        // filename = `images/IMG_0${photoOrder[i]}sm.jpg`;
+        currentFig = document.getElementsByTagName("img")[i - 1];
+        currentFig.src = filename;
+        console(currentFig.src);
+    }
+```
+9. Save and check everything. If you are not getting the expected output you may want to consider going back step by step, checking the spelling of functions, variables, etc.
+Your alerts / logs should output the following:
+"
+images/IMG_02sm.jpg
+images/IMG_03sm.jpg
+images/IMG_04sm.jpg
+"
+
+
+10.  Below leftArrow(), lets create a new function `called previewFive()` and log it:
+```javascript
+function previewFive() {
+    alert("previewFive() event handler");
+}
+```
+
+11. inside createEventListeners(), we are going to add another event listener but we'll use `querySelector`;
+    ```javascript
+       var showAllButton = document.querySelector("#fiveButton p");
+       if (showAllButton.addEventListener) {
+           showAllButton.addEventListener("click", previewFive, false);
+       } else if (showAllButton.attachEvent) {
+           showAllButton.attachEvent("onclick", previewFive);
+       }
+    ```
+12. Save and click the show more images button.
+
+# previewFive()
+
+13. Now Let’s create a new node for the DOM tree. It will be a <figure> element that will hold the fifth <img> element. We will do this in the `previewFive()` function:
+```javascript
+    var lastFigure = document.createElement("figure");
+```
+Do a quick save and browser & Console test just to be sure we did not introduce any bugs.
+15. Now we need to add an id attribute and some style properties to the new element as follows:
+```javascript
+    lastFigure.id = "fig5";
+    lastFigure.style.zIndex = "5";
+    lastFigure.style.position = "absolute";
+    lastFigure.style.right = "45px";
+    lastFigure.style.top = "67px";
+```
+Do a quick save and browser & Console test just to be sure we did not introduce any bugs.
+
+16. Let’s create another new node for the DOM tree. It will be the <img> element for the <figure> element. It should go below the previous code:
+```javascript
+    // create image
+    var lastImage = document.createElement("img");
+```
+17. Now we need to add a couple of HTML attributes to the new element as follows:
+```javascript
+    lastImage.width = "240";
+    lastImage.height = "135";
+```
+Do a quick save and browser & Console test just to be sure we did not introduce any bugs.
+17. Note that when you click the Show more images button. No new <figure> element appears. That is because we have not yet attached it to the DOM tree.
+    
+# Step 5
+18. Now let’s **remove the debug ** and attach the new <img> element to the new <figure> element, creating a document fragment:
+```javascript
+    lastFigure.appendChild(lastImage);
+```
+19. To attach the document fragment to the <article>, we use the following:
+```javascript
+    articleElem.appendChild(lastFigure);
+    // you should now see figure#fig5 after the button
+    console.log(articleElem);
+```
+# Step 6
+20. We will duplicate the new nodes we added to the DOM tree by using the `cloneNode()` method. We will make sure to clone the entire document fragment of parent and child nodes. At the bottom of previewFive(), let’s add the following new code:
+```javascript
+    var firstFigure = lastFigure.cloneNode(true);
+```
+21. We need to change its id attribute and a couple of its style attribute properties:
+```javascript
+    firstFigure.id = "fig1";
+    firstFigure.style.right = "";
+    firstFigure.style.left = "45px"
+```
+22. To attach the document fragment to the <article>, we use the following:
+```javascript
+    articleElem.appendChild(firstFigure);
+    console.log(articleElem); // comment out after you see the new fig1
+```
+23. Save changes and run in the browser / log it. If everything is working, you should see the new fig1 added to the tree.
+24. You can see that the new elements in the gallery have no images. If you expand any of the original figure elements, you will see that we have set their src attributes. The two new elements do not have values for src. We need to take care of that at the end of previewFive():
+```javascript
+document.getElementsByTagName("img")[3].src = "images/IMG_0" + photoOrder[4] + "sm.jpg";
+document.getElementsByTagName("img")[4].src = "images/IMG_0" + photoOrder[0] + "sm.jpg";
+```
+Save changes and run in the browser and click the Show more images button. You can now see the images and the Developer tools show the src attributes are now populated.
+25. If we try the arrows buttons, we can see that the Photo Gallery is not yet operating correctly. 
+We are going to have to do some surgery on the existing code. 
+We need another global variable after the photoOrder variable. 
+It will control our figure count. Now on the top of photo.js, change globals to look as follows:
+```js
+/* global variables */
+var photoOrder = [1, 2, 3, 4, 5];
+var figureCount = 3;
+```  
+26.   Now we have to modify the `populateFigures()` function to get the carousel operating correctly. The for loop logic needs major work. There are cleaner ways to do the following, but we will just use brute force for now. Enclose the for loop in an if statement to cover 3 images as follows and then wrap the previous loop inside an else:
+```js
+function populateFigures() {
+    var filename;
+    var currentFig;
+    if (figureCount === 3) {
+        for (var i = 1; i < 4; i++) {
+            filename = "images/IMG_0" + photoOrder[i] + "sm.jpg";
+            currentFig = document.getElementsByTagName("img")[i - 1];
+            currentFig.src = filename;
+        }
+    }
+    else {
+        for (var i = 0; i < 5; i++) {
+            filename = "images/IMG_0" + photoOrder[i] + "sm.jpg";
+            currentFig = document.getElementsByTagName("img")[i];
+            currentFig.src = filename;
+        }
+    }
+}
+```
+27. Back in `previewFive()` Just before the closing brace, reset the figureCount global variable:
+```js
+    figureCount = 5;
+```
+28.  Now let’s give it a browser test. Things look good when we and click the Show more images button. All the images show up. Uh-oh, click the right arrow button and the images don’t change. Click it a second time and it works. The problem is that the problem is that the new <figure> elements are in the wrong positions in the DOM tree. Look at their order in the browser Developer Tools.
+# Step 7
+29. Comment it out: `// articleElem.appendChild(lastFigure);`
+30. Right after it, let’s change the code to:
+```js
+    articleElem.insertBefore(lastFigure, document.getElementById("rightarrow"));
+```
+32. comment it out:// articleElem.appendChild(firstFigure);
+33. Right after it, let’s change the code to:
+```js
+    articleElem.insertBefore(firstFigure,document.getElementById("fig2"));
+```
+34. Update the index numbers in the next two statements:
+    document.getElementsByTagName("img")[0].src = "images/IMG_0" + photoOrder[0] + "sm.jpg";
+    document.getElementsByTagName("img")[4].src = "images/IMG_0" + photoOrder[4] + "sm.jpg";
+35. Save changes and run in the browser. Click the Show more images button. The right arrow should now be working on the first click. In the Developer Tools, open the Elements tab to examine the DOM tree and expand the elements. The order of the DOM tree should now be correct.
+Let’s give something a try. Cycle the browser and click the Show more images button. Click it again and we are getting some bad behavior. Keep on clicking it, it gets worse. What we need to do is change the behavior of the button
+
+# Step 8
+36. First, we need to change the button text. Within previewFive(), add the following code to the bottom to get a reference to the button:
+    ```js
+    var numberButton = document.querySelector("#fiveButton p");
+    numberButton.innerHTML = "Show fewer images";
+    ```
+37. 2.	If the button is displaying correctly, we need to fix the behavior when it is clicked. For that, we will have to **remove the event listener** that adds images. Then we will set a new event listener to remove images. Below the above code, the following should accomplish that goal:
+    ```js
+    if (numberButton.addEventListener) {
+        numberButton.removeEventListener("click", previewFive, false);
+        numberButton.addEventListener("click", previewThree, false);
+    } 
+    else if (numberButton.attachEvent) {
+        numberButton.detachEvent("onclick", previewFive);
+        numberButton.attachEvent("onclick", previewThree);
+    }
+    ```
+Test that in the browser and look in the console to see if we have introduced any bugs. We can see that the previewThree() event listener is undefined.
+38. Below previewFive(), let’s define `previewThree()` with just a simple alert() test:
+```js
+function previewThree() {
+    alert("previewThree() called");
+}
+```
+Test that in the browser. We should get our alert() message and the Console error should be gone.
+39. Let’s build previewThree() out with the code to remove the fig1 and fig5 elements from the DOM Tree:
+```js
+    var articleElem = document.getElementsByTagName("article")[0];
+    var numberButton = document.querySelector(
+      "#fiveButton p");
+    articleElem.removeChild(document.getElementById("fig1"));
+    articleElem.removeChild(document.getElementById("fig5"));
+```
+Give that a browser test. The gallery should be back to three images. There should be no Console errors, and the DOM tree should be modified.
+40. If we start clicking the right arrow, we see that we have some more fix up to do to make this work properly. Let’s add the cleanup code to the bottom of `previewThree()`:
+```js
+    figureCount = 3;
+    numberButton.innerHTML = "Show more images";
+    if (numberButton.addEventListener) {
+        numberButton.removeEventListener("click", previewthree, false);
+        numberButton.addEventListener("click", previewFive, false);
+    } 
+    else if (numberButton.attachEvent) {
+        numberButton.detachEvent("onclick", previewThree);
+        numberButton.attachEvent("onclick", previewFive);
+    }
+```
+Let’s give that a test in the browser for functionality, console errors, and DOM tree structure.
+
+# Step 9 - working with zoom.js
+42. Return to photos.js, find the zoomFig() function, and add the following code to its code block:
+```js
+var zoomWindow = window.open("zoom.html", "zoomwin", "width=960,height=600");
+```
+43. Save and try it out. When you click on the center image it will open it in a new window, zoomed in.
+44. We will add a focus() method to zoomFig(). This will solve the possible problem of the new window getting lost behind the original window with inadvertent mouse clicks. Easy enough, add a final statement to zoomFig():
+```js
+    zoomWindow.focus();
+```
+# Step 10
+45.  In zoom.js implement a Close Window feature.
+    ```js
+    function closeWin() {
+        window.close();
+    }
+    ```
+46. Let’s build a `createEventListener()` :
+    ```js
+    function createEventListener() {
+        var closeWindowDiv = document.getElementsByTagName("p")[0];
+        if (closeWindowDiv.addEventListener) {
+            closeWindowDiv.addEventListener("click", closeWin, false);
+        } else if (closeWindowDiv.attachEvent) {
+            closeWindowDiv.attachEvent("onclick", closeWin);
+        }
+    }
+    ```
+47.  In zoom.js, `pageSetup()`, Let’s finish this up by calling `createEventListener()`. 
+    ```js
+    createEventListener();
+    ```
+# Step 11
+In photos.js lets implement an interval timer to make the Photo Gallery images advance automatically every 5 seconds
+1. The global variables section should now look like this with the third `var autoAdvance . . .` being new:
+```js
+/* global variables */
+var photoOrder = [1, 2, 3, 4, 5];
+var figureCount = 3;
+var autoAdvance = setInterval(rightAdvance, 1000);
+```
+The only problem is that there is no way to shut it off. Let’s use a click on the Left Arrow to take care of that. 
+2. go to `leftArrow()`  add the following code:
+    ```js
+    clearInterval(autoAdvance);
+    ```
+3. Enabling a stop switch for the right arrow is a little more tricky. This is because the original setInterval() call is using the rightArrow() function. The fix to this is to change the call to rightAdvance in the setInterval() call, then rename the rightArrow() function to rightAdvance():
+```js
+var autoAdvance = setInterval(rightAdvance, 5000);
+
+function rightAdvance() {}
+```
+If we test this, the image gallery is working, but the console tells us that rightArrow() is no longer defined.
+4.	Just above the rightAdvance(), let’s build a pretty simple new rightArrow() function, that just shuts down the interval timer, then calls rightAdvance() to shift one image:
+function rightArrow() {
+    clearInterval(autoAdvance);
+    rightAdvance();
+}
+5.	Let’s give this a full on browser test and we should have interval shutdowns with both arrows.
+
+6. The code should now look like:
+   ```js
+      function rightArrow() {
+          clearInterval(autoAdvance);
+          rightAdvance();
+      }
+
+      /* shift all images one figure to the left, and change values in photoOrder array to match  */
+      function rightAdvance() {
+          for (var i = 0; i < 5; i++) {
+              if ((photoOrder[i] + 1) === 6) {
+                  photoOrder[i] = 1;
+              } else {
+                  photoOrder[i] += 1;
+              }
+              populateFigures();
+          }
+      }
+   ```
+# Step 12
+In photo.js
+Place the following code at the top of the `zoomFig()` :
+```js
+    var propertyWidth = 960;
+    var propertyHeight =600;
+    var winLeft = ((screen.width - propertyWidth) / 2);
+    var winTop = ((screen.height - propertyHeight) / 2);
+    var winOptions = "width=960,height=600,";
+    winOptions += ",left=" + winLeft;
+    winOptions += ",top=" + winTop;
+```
+2.	Finally, let’s change the window.open() statement as follows:
+```js
+    var zoomWindow = window.open("zoom.html", "zoomwin", 
+        winOptions);
+```
+Let’s save this and give the site a good browser test. One thing to note, Chrome has a weird bug and ignores the left option if running on a second monitor
+
+3. In photo.js, zoomFig() should look like:
+```js
+function zoomFig() {
+    var propertyWidth = 960;
+    var propertyHeight =600;
+    var winLeft = ((screen.width - propertyWidth) / 2);
+    var winTop = ((screen.height - propertyHeight) / 2);
+    var winOptions = "width=960,height=600,";
+    winOptions += ",left=" + winLeft;
+    winOptions += ",top=" + winTop;
+    var zoomWindow = window.open("zoom.html", "zoomwin", winOptions);
+    zoomWindow.focus();
+}
+```
+
+# CONGRATS ! YOU ARE ALL DONE ! ! ! !!  ! ! !  ! !
