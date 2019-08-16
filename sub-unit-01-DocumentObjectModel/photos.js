@@ -2,8 +2,8 @@
 
  *    Photo gallery
  *    Variables and functions
- *    Author: 
- *    Date:   
+ *    Author: Todd Adcox Jr
+*     Date:   8-15-19   
 
  *    Filename: photos.js
  */
@@ -39,9 +39,39 @@ function leftArrow() {
 
 /* open center figure in separate window */
 function zoomFig() {
-   
+   var leftarrow;
 }
 
+function createEventListeners() {
+   var leftarrow = document.getElementById("leftarrow");
+   var rightarrow = document.getElementById("rightarrow");
+   if(leftarrow.addEventListener ) {
+      leftarrow.addEventListener("click", leftArrow, false);
+   }
+   else if (leftarrow.attachEvent) {
+      leftarrow.attachEvent("onClick", leftArrow);
+   }
+   if(rightarrow.addEventListener ) {
+      rightarrow.addEventListener("click", rightArrow, false);
+   }
+   else if (rightarrow.attachEvent) {
+      rightarrow.attachEvent("onClick", rightArrow);
+   }
+
+   var mainFig = document.getElementsByTagName("img")[1];
+   alert(mainFIg);
+
+   if (mainFig.addEventListener) {
+      mainFig.addEventListener("click", zoomFig, false);
+   }
+   else if (mainFig.attachEvent) {
+      mainFig.attachEvent("onClick", zoomFig);
+   }
+}
+
+function zoomFig() {
+   alert("center image clicked");
+}
 /* create event listeners and populate image elements */
 function setUpPage() {
    createEventListeners();
