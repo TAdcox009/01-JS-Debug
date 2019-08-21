@@ -59,8 +59,49 @@ function removeSelectDefaults() {
     alert("select lists: " + emptyBoxes.length)
 }
 
-function SetUpPAge() {
+function setUpPage() {
     removeSelectDefaults();
+    setUpDays();
+    createEventListeners();
+}
+
+function autoCheckCustom () {
+    var messageBox = document.getElementById("customText");
+    if (messageBox.value !== "" && messageBox.value !== messageBox.placeholder) {
+        document.getElementById("custom").checked = "checked";
+    } else {
+        document.getElementById("custom").checked = "";
+    }
+}
+
+
+
+function copyBillingAddress() {
+    var billingInputElements = document.querySelectorAll("#billingaddress input");
+    var deliveryInputElements = document.querySelectorAll("#deliveryAddress input");
+
+    if (document.getElementById("sameAddr").checked) {
+        for (var i = 0; i < billingInputElements.length; i++) {
+            deliveryInputElements[i + 1].value;
+        }
+        document.querySelector("#deliveryAddress select").value = document.querySelector("#billingAddress select").value;
+    }
+}
+
+function createEventListeners() {
+    var deliveryMonth = document.getElementById("delivMo");
+    if(deliveryMonth.addEventListener) {
+        deliveryMonth.addEventListener("change", updateDays, false);
+    } else if (deliveryMonth.attachEvent) {
+        deliveryMonth.attachEvent("onchange", updateDays);
+    }
+
+    var deliveryYear =document.getElementById("delivYr");
+    if (deliveryYear.addEventListener) {
+        deliveryYear.addEventListener("change", updateDays, false);
+    } else if (deliveryYear.attachEvent) {
+        deliveryYear.attachEvent("onchange", updateDays)
+    }
 }
 
 function createEventListener() {
@@ -73,5 +114,12 @@ function createEventListener() {
 
     for (var i = 0; i < emptyBoxes.length; i++) {
         emptyBoxes[i].selectedIndex = -1;
+    }
+
+    var messageBox = document.getElementById("customText");
+    if (messageBox.addEventListener) {
+        messageBox.addEventListener("change", autoCheckCustom, false);
+    } else if (messageBox.attachEvent) {
+        messageBox.attachEvent("onchange", autoCheckCustom);
     }
 }
